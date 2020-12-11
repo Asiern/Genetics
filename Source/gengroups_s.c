@@ -42,7 +42,7 @@ void main (int argc, char *argv[])
   int     nelem, group;
   int     grind[MAXELE];   //group assigned to each element 
   int     finish = 0, niter = 0; 
-  float   discent;
+  double  discent;
 
   FILE    *f1, *f2;
   struct timespec  t1, t2, t3, t4, t5, t6, t7;
@@ -190,13 +190,13 @@ void main (int argc, char *argv[])
   
   f2 = fopen ("results_s.out", "w");
   if (f2 == NULL) {
-    printf ("Error when opening file %s \n", argv[1]);
+    printf ("Error when opening file results_s.outs \n");
     exit (-1);
   }
   
   fprintf (f2, " Centroids of groups \n\n");
   for (i=0; i<NGROUPS; i++) {
-    for (j=0; j<NFEAT; j++) fprintf (f2, "%7.3f", newcent[i][j]);
+    for (j=0; j<NFEAT; j++) fprintf (f2, "%7.3f", cent[i][j]);
     fprintf (f2,"\n");
   }
 
