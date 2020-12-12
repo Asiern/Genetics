@@ -18,8 +18,8 @@
 double gendist(float *elem1, float *elem2)
 {
    // calculate the distance between two elements (Euclidean)
-   double x = elem1 - elem2;
-   return (double)sqrt(powd(x, 2));
+   double dist = elem1[0] - elem2[0];
+   return sqrt(powl(dist, 2));
 }
 
 /* 2 - Function to calculate the closest group (closest centroid) for each element.
@@ -62,10 +62,10 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
    }
 }
 
-/* 3 - Function to calculate the compactness of each group (average distance between all the elements in the group) 
+/* 3 - Function to calculate the compactness of each group (average distance between all the elements in the group)
    Input:  elem     elements (matrix of size MAXELE x NFEAT, by reference)
            iingrs   indices of the elements in each group (matrix of size NGROUPS x MAXELE, by reference)
-   Output: compact  compactness of each group (vector of size NGROUPS, by reference) 
+   Output: compact  compactness of each group (vector of size NGROUPS, by reference)
 ***************************************************************************************************/
 
 void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
@@ -75,7 +75,7 @@ void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
    // compactness of each group: average distance between members
 }
 
-/* 4 - Function to analyse diseases 
+/* 4 - Function to analyse diseases
    Input:  iingrs   indices of the elements in each group (matrix of size NGROUPS x MAXELE, by reference)
            dise     information about the diseases (NGROUPS x TDISEASE)
    Output: disepro  analysis of the diseases: maximum, minimum, and groups
