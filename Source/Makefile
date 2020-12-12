@@ -1,3 +1,19 @@
-#Compile main program
-gengroups_s: fungg_s.c gengroups_s.c
-	gcc -O2 -o gengroups_s gengroups_s.c fungg_s.c -lm
+src = gengroups_s.c fungg_s.c
+
+CC = gcc
+RM = rm -f
+FLAGS = -O2 #-Wall -Wextra -Werror
+
+NAME = genetics
+
+all: $(NAME)
+
+$(NAME): $(NAME)
+	$(CC) $(FLAGS) -o $(NAME) $(src) -lm
+
+clean:
+	$(RM) $(NAME)
+
+re: clean $(NAME)
+
+.PHONY: all clean re
