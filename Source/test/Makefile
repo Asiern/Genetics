@@ -1,4 +1,4 @@
-src = test.c
+src = test.c test_functions.c
 CC = gcc
 RM = rm -f
 FLAGS = #-Wall -Wextra -Werror
