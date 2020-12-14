@@ -11,4 +11,4 @@ extern void testGendist(double expected, double actual, const char *testName);
     actual => obtained grind values
     testName => name of the test
 */
-// extern void testClosestgroup(int *expected, int *actual, const char *testName);
+extern void testClosestgroup(int *expected, int *actual, const char *testName, int size);
