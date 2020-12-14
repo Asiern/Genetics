@@ -31,32 +31,23 @@ double gendist(float *elem1, float *elem2)
 
 void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grind)
 {
-   //element index
    int index = 0;
-   //elem[] rows
-   for (int i = 0; i < NFEAT; i++)
+   for (int i = 0; i < nelem; i++)
    {
-      //elem[] cols
-      for (int j = 0; j < MAXELE; j++)
+      for (int j = 0; j < NFEAT; j++)
       {
-         //closest group distance
-         double closestDistance = DBL_MAX;
-         //closest cent element
-         float closestCent;
-         for (int m = 0; m < NFEAT; m++)
+         double closest = FLT_MAX;
+         for (int m = 0; m < NGROUPS; m++)
          {
-            for (int n = 0; n < NGROUPS; n++)
+            for (int n = 0; n < NFEAT; n++)
             {
-               //compare current element and minimun
-               if (gendist(&elem[i][j], &cent[m][n]) < closestDistance)
+               if (gendist(&elem[i][j], &cent[m][n]) < closest)
                {
-                  closestCent = cent[m][n];
+                  closest = cent[m][n];
                }
             }
          }
-         //add closest cent to grind
-         // grind: closest group/centroid for each element
-         grind[index] = (int)closestCent;
+         grind[index] = closest;
          index++;
       }
    }
