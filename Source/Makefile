@@ -12,7 +12,7 @@ $(NAME): $(NAME)
 	$(CC) $(FLAGS) -o $(NAME) $(SRC) -lm
 
 clean:
-	$(RM) $(NAME) test/$(TESTNAME)
+	$(RM) $(NAME)
 
 re: clean $(NAME)
 
