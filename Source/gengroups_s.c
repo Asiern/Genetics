@@ -28,7 +28,7 @@ struct analysis disepro[TDISEASE]; // vector to store information about each dis
 // Main programa
 // ================
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   float cent[NGROUPS][NFEAT], newcent[NGROUPS][NFEAT]; //centroid and new centroid
   double additions[NGROUPS][NFEAT + 1];
@@ -269,4 +269,5 @@ void main(int argc, char *argv[])
            disepro[i].gmax, disepro[i].min, disepro[i].gmin);
     printf("\n");
   }
+  return 0;
 }
