@@ -18,8 +18,12 @@
 double gendist(float *elem1, float *elem2)
 {
    // calculate the distance between two elements (Euclidean)
-   double dist = elem1[0] - elem2[0];
-   return sqrt(powl(dist, 2));
+   float dist = 0;
+   for (int i = 0; i < NFEAT; i++)
+   {
+      dist = dist + powl((elem1[i] - elem2[i]), 2);
+   }
+   return sqrt(dist);
 }
 
 /* 2 - Function to calculate the closest group (closest centroid) for each element.
@@ -31,24 +35,16 @@ double gendist(float *elem1, float *elem2)
 
 void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grind)
 {
-   int index = 0;
    for (int i = 0; i < nelem; i++)
    {
-      for (int j = 0; j < NFEAT; j++)
+      double closest = FLT_MAX;
+      for (int n = 0; n < NGROUPS; n++)
       {
-         double closest = FLT_MAX;
-         for (int m = 0; m < NGROUPS; m++)
+         if (gendist(elem[i], cent[n]) < closest)
          {
-            for (int n = 0; n < NFEAT; n++)
-            {
-               if (gendist(&elem[i][j], &cent[m][n]) < closest)
-               {
-                  closest = cent[m][n];
-               }
-            }
+            closest = gendist(elem[i], cent[n]);
+            grind[i] = n;
          }
-         grind[index] = closest;
-         index++;
       }
    }
 }
@@ -61,9 +57,21 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
 
 void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
 {
-
-   // TO DO
    // compactness of each group: average distance between members
+   for (int i = 0; i < NGROUPS; i++)
+   {
+      int num = 0;
+      float sum = 0.0;
+      for (int j = 0; j < iingrs[i].size; j++)
+      {
+         for (int e = j + 1; e < iingrs[i].size; e++)
+         {
+            sum = sum + gendist(elem[iingrs[i].members[j]], elem[iingrs[i].members[e]]);
+            num++;
+         }
+      }
+      compact[i] = sum / num > 0 ? sum / num : 0;
+   }
 }
 
 /* 4 - Function to analyse diseases
