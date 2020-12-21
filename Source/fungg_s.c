@@ -83,9 +83,33 @@ void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
 
 void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *disepro)
 {
-
-   // TO DO
    // process the information about diseases to obtain
    // the maximum and the group where the maximum is found (for each disease)
    // the minimum and the group where the minimum is found (for each disease)
+   //groups
+   for (int i = 0; i < NGROUPS; i++)
+   {
+      disepro[i].min = FLT_MAX;
+      //elems
+      for (int j = 0; j < TDISEASE; j++)
+      {
+         //diseases
+         float sum = 0;
+         for (int m = 0; m < iingrs[i].size; m++)
+         {
+            sum += dise[iingrs[i].members[m]][j];
+         }
+         float mean = sum / iingrs[i].size;
+         if (disepro[j].min > mean)
+         {
+            disepro[j].min = mean;
+            disepro[j].gmin = i;
+         }
+         if (disepro[j].max < mean)
+         {
+            disepro[j].max = mean;
+            disepro[j].gmax = i;
+         }
+      }
+   }
 }
