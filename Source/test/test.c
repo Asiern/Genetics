@@ -1,21 +1,64 @@
 #include "stdio.h"
-#include "../fungg_s.c"
-#include "test_functions.h"
+#include <stdlib.h>
+#include <string.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    //TEST gendist(float, float)
-    float elem1 = 0.0;
-    float elem2 = 5.0;
-    float elem3 = 20.0;
-    printf("----- Testing gendist -----");
-    testGendist(20.0, gendist(&elem1, &elem3), "0, 20");
-    testGendist(15.0, gendist(&elem2, &elem3), "20, 5");
-    testGendist(20.0, gendist(&elem3, &elem1), "20, 0");
-    printf("\n");
+    FILE *f1, *f2;
+    int ch1, ch2;
 
-    //TEST closestgroup(int, float, float, int)
-    printf("\n----- Testing closestgroup -----");
-    printf("\n");
+    //Check args
+    if (argc != 3)
+    {
+        printf("ATTENTION: not file names provided \n");
+        printf("You can provide arguments as indicated: program file1 file2\n");
+        //Open file 1
+        f1 = fopen("../results1000.out", "r");
+        //Open file 2
+        f2 = fopen("../results_s.out", "r");
+    }
+    else
+    {
+        //Open file 1
+        f1 = fopen(argv[1], "r");
+        //Open file 2
+        f2 = fopen(argv[2], "r");
+    }
+
+    if (f1 == NULL)
+    {
+        printf("Error opening file %s \n", argv[1]);
+        exit(-1);
+    }
+    else if (f2 == NULL)
+    {
+        printf("Error opening file %s \n", argv[2]);
+        exit(-1);
+    }
+    else
+    {
+        ch1 = getc(f1);
+        ch2 = getc(f2);
+        //Compare characters
+        while ((ch1 != EOF) && (ch2 != EOF) && (ch1 == ch2))
+        {
+            ch1 = getc(f1);
+            ch2 = getc(f2);
+        }
+
+        if (ch1 == ch2)
+        {
+            printf("Files are identical");
+            printf("\n");
+        }
+        else
+        {
+            printf("Files are NOT identical");
+            printf("\n");
+        }
+        fclose(f1);
+        fclose(f2);
+    }
+
     return 0;
 }
