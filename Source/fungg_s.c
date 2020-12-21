@@ -40,9 +40,10 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
       double closest = FLT_MAX;
       for (int n = 0; n < NGROUPS; n++)
       {
-         if (gendist(elem[i], cent[n]) < closest)
+         double dist = gendist(elem[i], cent[n]);
+         if (dist < closest)
          {
-            closest = gendist(elem[i], cent[n]);
+            closest = dist;
             grind[i] = n;
          }
       }
