@@ -1,7 +1,7 @@
-src = test.c test_functions.c
+src = test.c
 CC = gcc
 RM = rm -f
-FLAGS = #-Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 NAME = test
 
