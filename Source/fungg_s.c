@@ -19,7 +19,10 @@ double gendist(float *elem1, float *elem2)
 {
    // calculate the distance between two elements (Euclidean)
    float dist = 0;
-   for (int i = 0; i < NFEAT; i++)
+   int i;
+#pragma omp parallel for private(i) reduction(+ \
+                                              : dist)
+   for (i = 0; i < NFEAT; i++)
    {
       dist = dist + powl((elem1[i] - elem2[i]), 2);
    }
@@ -87,28 +90,35 @@ void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *dis
    // the maximum and the group where the maximum is found (for each disease)
    // the minimum and the group where the minimum is found (for each disease)
    //groups
-   for (int i = 0; i < NGROUPS; i++)
+   int i, j, m;
+   float sum = 0;
+#pragma omp for private(i) schedule(static)
+   for (i = 0; i < TDISEASE; i++)
    {
+      disepro[i].max = FLT_MIN;
       disepro[i].min = FLT_MAX;
-      //elems
-      for (int j = 0; j < TDISEASE; j++)
+   }
+
+#pragma omp for private(i, j, m, sum) schedule(dynamic, 1)
+   for (i = 0; i < NGROUPS; i++)
+   {
+      for (j = 0; j < TDISEASE; j++)
       {
-         //diseases
-         float sum = 0;
-         for (int m = 0; m < iingrs[i].size; m++)
+         sum = 0;
+         for (m = 0; m < iingrs[i].size; m++)
          {
             sum += dise[iingrs[i].members[m]][j];
          }
-         float mean = sum / iingrs[i].size;
-         if (disepro[j].min > mean)
+         sum /= iingrs[i].size;
+         if (sum > disepro[j].max)
          {
-            disepro[j].min = mean;
-            disepro[j].gmin = i;
-         }
-         if (disepro[j].max < mean)
-         {
-            disepro[j].max = mean;
+            disepro[j].max = sum;
             disepro[j].gmax = i;
+         }
+         if (sum < disepro[j].max)
+         {
+            disepro[j].min = sum;
+            disepro[j].gmin = i;
          }
       }
    }
