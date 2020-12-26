@@ -38,12 +38,15 @@ double gendist(float *elem1, float *elem2)
 
 void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grind)
 {
-   for (int i = 0; i < nelem; i++)
+   int i, n;
+   double dist, closest = FLT_MAX;
+#pragma omp for private(i, closest, dist) schedule(dynamic, 1)
+   for (i = 0; i < nelem; i++)
    {
-      double closest = FLT_MAX;
-      for (int n = 0; n < NGROUPS; n++)
+      closest = FLT_MAX;
+      for (n = 0; n < NGROUPS; n++)
       {
-         double dist = gendist(elem[i], cent[n]);
+         dist = gendist(elem[i], cent[n]);
          if (dist < closest)
          {
             closest = dist;
@@ -62,13 +65,16 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
 void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
 {
    // compactness of each group: average distance between members
-   for (int i = 0; i < NGROUPS; i++)
+   int num, j, i, e;
+   float sum;
+#pragma omp for private(i, j, e, num, sum) schedule(dynamic, 1)
+   for (i = 0; i < NGROUPS; i++)
    {
-      int num = 0;
-      float sum = 0.0;
-      for (int j = 0; j < iingrs[i].size; j++)
+      num = 0;
+      sum = 0.0;
+      for (j = 0; j < iingrs[i].size; j++)
       {
-         for (int e = j + 1; e < iingrs[i].size; e++)
+         for (e = j + 1; e < iingrs[i].size; e++)
          {
             sum = sum + gendist(elem[iingrs[i].members[j]], elem[iingrs[i].members[e]]);
             num++;
