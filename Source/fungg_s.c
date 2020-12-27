@@ -121,7 +121,7 @@ void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *dis
             disepro[j].max = sum;
             disepro[j].gmax = i;
          }
-         if (sum < disepro[j].max)
+         if (sum < disepro[j].min)
          {
             disepro[j].min = sum;
             disepro[j].gmin = i;
