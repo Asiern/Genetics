@@ -40,7 +40,7 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
 {
     int i, n;
     double dist, closest = FLT_MAX;
-#pragma omp for private(i, closest, dist) schedule(dynamic, 1)
+#pragma omp parallel for default(none) shared(nelem, elem, cent, grind) private(i, n, dist, closest) num_threads(NUM_THREADS) schedule(dynamic, 3)
     for (i = 0; i < nelem; i++)
     {
         closest = FLT_MAX;
@@ -67,7 +67,7 @@ void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
     // compactness of each group: average distance between members
     int num, j, i, e;
     float sum;
-#pragma omp for private(i, j, e, num, sum) schedule(dynamic, 1)
+#pragma omp parallel for default(none) shared(elem, iingrs, compact) private(i, j, e, sum, num) num_threads(NUM_THREADS) schedule(dynamic, 1)
     for (i = 0; i < NGROUPS; i++)
     {
         num = 0;
@@ -105,7 +105,7 @@ void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *dis
         disepro[i].min = FLT_MAX;
     }
 
-#pragma omp for private(i, j, m, sum) schedule(dynamic, 1)
+#pragma omp parallel for default(none) shared(dise, iingrs, disepro) private(i, j, sum, m) num_threads(NUM_THREADS) schedule(dynamic, 1)
     for (i = 0; i < NGROUPS; i++)
     {
         for (j = 0; j < TDISEASE; j++)
