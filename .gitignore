@@ -1,5 +1,5 @@
 #Ignore compiled files
-/Source/genetics
-/Source/test/test
+/Source/genetics_p
+/Source/genetics_s
 #Ignore output
 *.out
