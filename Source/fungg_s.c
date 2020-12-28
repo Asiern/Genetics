@@ -2,7 +2,6 @@
    CA - OpenMP
    fungg_s.c
    Routines used in gengroups_s.c program
-
    TO BE COMPLETED
 ***************************************************************/
 
@@ -19,10 +18,7 @@ double gendist(float *elem1, float *elem2)
 {
    // calculate the distance between two elements (Euclidean)
    float dist = 0;
-   int i;
-#pragma omp parallel for private(i) reduction(+ \
-                                              : dist)
-   for (i = 0; i < NFEAT; i++)
+   for (int i = 0; i < NFEAT; i++)
    {
       dist = dist + powl((elem1[i] - elem2[i]), 2);
    }
@@ -38,15 +34,12 @@ double gendist(float *elem1, float *elem2)
 
 void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grind)
 {
-   int i, n;
-   double dist, closest = FLT_MAX;
-#pragma omp for private(i, closest, dist) schedule(dynamic, 1)
-   for (i = 0; i < nelem; i++)
+   for (int i = 0; i < nelem; i++)
    {
-      closest = FLT_MAX;
-      for (n = 0; n < NGROUPS; n++)
+      double closest = FLT_MAX;
+      for (int n = 0; n < NGROUPS; n++)
       {
-         dist = gendist(elem[i], cent[n]);
+         double dist = gendist(elem[i], cent[n]);
          if (dist < closest)
          {
             closest = dist;
@@ -65,16 +58,13 @@ void closestgroup(int nelem, float elem[][NFEAT], float cent[][NFEAT], int *grin
 void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
 {
    // compactness of each group: average distance between members
-   int num, j, i, e;
-   float sum;
-#pragma omp for private(i, j, e, num, sum) schedule(dynamic, 1)
-   for (i = 0; i < NGROUPS; i++)
+   for (int i = 0; i < NGROUPS; i++)
    {
-      num = 0;
-      sum = 0.0;
-      for (j = 0; j < iingrs[i].size; j++)
+      int num = 0;
+      float sum = 0.0;
+      for (int j = 0; j < iingrs[i].size; j++)
       {
-         for (e = j + 1; e < iingrs[i].size; e++)
+         for (int e = j + 1; e < iingrs[i].size; e++)
          {
             sum = sum + gendist(elem[iingrs[i].members[j]], elem[iingrs[i].members[e]]);
             num++;
@@ -98,14 +88,12 @@ void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *dis
    //groups
    int i, j, m;
    float sum = 0;
-#pragma omp for private(i) schedule(static)
    for (i = 0; i < TDISEASE; i++)
    {
       disepro[i].max = FLT_MIN;
       disepro[i].min = FLT_MAX;
    }
 
-#pragma omp for private(i, j, m, sum) schedule(dynamic, 1)
    for (i = 0; i < NGROUPS; i++)
    {
       for (j = 0; j < TDISEASE; j++)

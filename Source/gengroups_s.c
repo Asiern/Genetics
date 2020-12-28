@@ -8,7 +8,7 @@
     Input:  dbgen.dat 	   input file with genetic information
             dbdise.dat     input file with information about diseases
     Output: results_s.out  centroids, number of group members and compactness, and diseases
-
+    
     Compile with module fungg_s.c and include option -lm
 *************************************************************************/
 
