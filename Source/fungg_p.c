@@ -20,8 +20,6 @@ double gendist(float *elem1, float *elem2)
     // calculate the distance between two elements (Euclidean)
     float dist = 0;
     int i;
-#pragma omp parallel for private(i) reduction(+ \
-                                              : dist)
     for (i = 0; i < NFEAT; i++)
     {
         dist = dist + powl((elem1[i] - elem2[i]), 2);
