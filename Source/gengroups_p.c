@@ -8,14 +8,13 @@
     Input:  dbgen.dat 	   input file with genetic information
             dbdise.dat     input file with information about diseases
     Output: results_s.out  centroids, number of group members and compactness, and diseases
-
+    
     Compile with module fungg_p.c and include option -lm
 *************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <omp.h>
 
 #include "definegg.h"
 #include "fungg.h"
@@ -31,9 +30,6 @@ struct analysis disepro[TDISEASE]; // vector to store information about each dis
 
 int main(int argc, char *argv[])
 {
-    //set num threads
-    omp_set_num_threads(NUM_THREADS);
-
     float cent[NGROUPS][NFEAT], newcent[NGROUPS][NFEAT]; //centroid and new centroid
     double additions[NGROUPS][NFEAT + 1];
     float compact[NGROUPS]; // compactness of each group or cluster
@@ -74,7 +70,6 @@ int main(int argc, char *argv[])
     if (argc == 4)
         nelem = atoi(argv[3]);
 
-#pragma omp for private(i, j)
     for (i = 0; i < nelem; i++)
         for (j = 0; j < NFEAT; j++)
             if (fscanf(f1, "%f", &(elem[i][j])) < 0)
@@ -91,7 +86,6 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
-#pragma omp for private(i, j)
     for (i = 0; i < nelem; i++)
         for (j = 0; j < TDISEASE; j++)
             if (fscanf(f1, "%f", &dise[i][j]) < 0)
@@ -107,8 +101,6 @@ int main(int argc, char *argv[])
     // ===================================
 
     srand(147);
-
-#pragma omp for private(i, j)
     for (i = 0; i < NGROUPS; i++)
         for (j = 0; j < NFEAT / 2; j++)
         {
@@ -127,14 +119,13 @@ int main(int argc, char *argv[])
 
         closestgroup(nelem, elem, cent, grind);
 
-// calculate new centroids for each group:  average of each dimension or feature
-// additions: to accumulate the values for each feature and cluster. Last value: number of elements in the group
-#pragma omp for private(i, j) schedule(dynamic, 1)
+        // calculate new centroids for each group:  average of each dimension or feature
+        // additions: to accumulate the values for each feature and cluster. Last value: number of elements in the group
+
         for (i = 0; i < NGROUPS; i++)
             for (j = 0; j < NFEAT + 1; j++)
                 additions[i][j] = 0.0;
 
-#pragma omp for private(i, j) schedule(dynamic, 1)
         for (i = 0; i < nelem; i++)
         {
             for (j = 0; j < NFEAT; j++)
@@ -144,7 +135,6 @@ int main(int argc, char *argv[])
 
         // Calculate new centroids and decide to finish or not depending on DELTA
         finish = 1;
-#pragma omp for private(i, j) schedule(dynamic, 1)
         for (i = 0; i < NGROUPS; i++)
         {
             if (additions[i][NFEAT] > 0) //the group is not empty
@@ -203,7 +193,7 @@ int main(int argc, char *argv[])
     f2 = fopen("results_p.out", "w");
     if (f2 == NULL)
     {
-        printf("Error when opening file results_p.out\n");
+        printf("Error when opening file results_p.out \n");
         exit(-1);
     }
 
