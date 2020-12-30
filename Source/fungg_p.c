@@ -97,9 +97,9 @@ void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *dis
         disepro[i].min = FLT_MAX;
     }
 
+#pragma omp parallel for default(none) shared(dise, iingrs, disepro, i) private(j, sum, m) num_threads(NUM_THREADS) schedule(static, 1)
     for (i = 0; i < NGROUPS; i++)
     {
-#pragma omp parallel for default(none) shared(dise, iingrs, disepro, i) private(j, sum, m) num_threads(NUM_THREADS) schedule(static, 1)
         for (j = 0; j < TDISEASE; j++)
         {
             sum = 0;
