@@ -21,6 +21,6 @@ $(NAME)_p : $(NAME)_p
 clean:
 	$(RM) $(NAME)_p $(NAME)_s
 
-re: clean $(NAME)
+re: clean $(NAME)_p $(NAME)_s
 
 .PHONY: all clean re
