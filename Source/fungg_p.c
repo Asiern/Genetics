@@ -17,7 +17,6 @@
 
 double gendist(float *elem1, float *elem2)
 {
-    // calculate the distance between two elements (Euclidean)
     float dist = 0;
     int i;
     for (i = 0; i < NFEAT; i++)
@@ -65,7 +64,7 @@ void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
     // compactness of each group: average distance between members
     int num, j, i, e;
     float sum;
-#pragma omp parallel for default(none) shared(elem, iingrs, compact) private(i, j, e, sum, num) num_threads(NUM_THREADS) schedule(dynamic, 1)
+#pragma omp parallel for default(none) shared(elem, iingrs, compact) private(i, j, e, sum, num) num_threads(NUM_THREADS) schedule(static, 1)
     for (i = 0; i < NGROUPS; i++)
     {
         num = 0;
@@ -90,22 +89,17 @@ void compactness(float elem[][NFEAT], struct ginfo *iingrs, float *compact)
 
 void diseases(struct ginfo *iingrs, float dise[][TDISEASE], struct analysis *disepro)
 {
-    // process the information about diseases to obtain
-    // the maximum and the group where the maximum is found (for each disease)
-    // the minimum and the group where the minimum is found (for each disease)
-    //groups
     int i, j, m;
     float sum = 0;
-#pragma omp for private(i) schedule(static)
     for (i = 0; i < TDISEASE; i++)
     {
         disepro[i].max = FLT_MIN;
         disepro[i].min = FLT_MAX;
     }
 
-#pragma omp parallel for default(none) shared(dise, iingrs, disepro) private(i, j, sum, m) num_threads(NUM_THREADS) schedule(dynamic, 1)
     for (i = 0; i < NGROUPS; i++)
     {
+#pragma omp parallel for default(none) shared(dise, iingrs, disepro, i) private(j, sum, m) num_threads(NUM_THREADS) schedule(static, 1)
         for (j = 0; j < TDISEASE; j++)
         {
             sum = 0;
